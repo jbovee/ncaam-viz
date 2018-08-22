@@ -1,0 +1,57 @@
+body {
+	background-color: grey;
+}
+
+label, .bootstrap-select, input, .durationpicker-container {
+	display: block;
+}
+
+.gametime-picker {
+	color: #212529;
+	background-color: #f8f9fa;
+	border-color: #f8f9fa;
+	display: inline-block;
+	font-weight: 400;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	border: 1px solid transparent;
+	padding: .325rem .75rem;
+	font-size: 1rem;
+	line-height: 1.5;
+	border-radius: .25rem;
+	transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+label, h2 {
+	font-family: sans-serif;
+	color: #fff;
+}
+
+h2 {
+	padding-top: 20px;
+}
+
+label {
+	margin-bottom: 0px;
+}
+
+.selection {
+	float: left;
+	margin-right: 10px;
+	padding-bottom: 10px;
+}
+
+#legend path {
+	display: none;
+}
+#legend line {
+	stroke: #fff;
+}
+#legend text {
+	fill: #fff;
+}

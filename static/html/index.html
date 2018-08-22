@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>NCAAM Visualization</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+		<!-- Bootstrap-select -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0-beta/css/bootstrap-select.min.css">
+		<link href={{ url_for('static', filename='./css/duration-picker.min.css') }} rel="stylesheet" media="screen">
+		<link href={{ url_for('static', filename='./css/main.css') }} rel="stylesheet" media="screen">
+	</head>
+	<body>
+		<div class="d-flex align-items-center flex-column">
+			<h2>NCAAM Shots</h2>
+			<div class="btn-group" style="padding-bottom: 10px">
+				<button id="btn-draw" class="btn btn-light" type="submit" onclick="shot_heatmap()">Draw Shots</button>
+				<button id="btn-reset" class="btn btn-light" style="border-left: 1px solid lightgrey;" onclick="reset_selections()">Reset</button>
+			</div>
+			<div id="selects" class="d-flex align-items-center">
+				<div class="selection">
+					<label for="conf">Conference</label>
+					<select id="conf" class="selectpicker" data-live-search="true" data-size="5" data-width="100px">
+					</select>
+				</div>
+				<div class="selection">
+					<label for="division">Division</label>
+					<select id="division" class="selectpicker" data-live-search="true" data-size="5" data-width="70px">
+						<option>All</option>
+						<option data-value="D1">D1</option>
+						<option data-value="D2">D2</option>
+						<option data-value="D3">D3</option>
+						<option data-value="NAIA">NAIA</option>
+						<option data-value="NCAIA">NCAIA</option>
+						<option data-value="NCCAA">NCCAA</option>
+					</select>
+				</div>
+				<div class="selection">
+					<label for="team">Team</label>
+					<select id="team" class="selectpicker" data-live-search="true" data-size="5" data-width="260px"></select>
+				</div>
+				<div class="selection">
+					<label for="season">Season</label>
+					<select id="season" class="selectpicker" data-live-search="true" data-size="5" data-width="80px">
+						<option>All</option>
+						<option data-value=2013>2013</option>
+						<option data-value=2014>2014</option>
+						<option data-value=2015>2015</option>
+						<option data-value=2016>2016</option>
+						<option data-value=2017>2017</option>
+					</select>
+				</div>
+				<div class="selection">
+					<label for="period">Period</label>
+					<select id="period" class="selectpicker" data-live-search="true" data-size="5" data-width="60px">
+						<option>All</option>
+						<option data-value=1>1</option>
+						<option data-value=2>2</option>
+						<option data-value=3>3</option>
+						<option data-value=4>4</option>
+						<option data-value=5>5</option>
+						<option data-value=6>6</option>
+					</select>
+				</div>
+				<div class="selection">
+					<label for="gametime-from">From</label>
+					<input id="gametime-from" type="text" name="gametime-from">
+				</div>
+				<div class="selection">
+					<label for="gametime-to">To</label>
+					<input id="gametime-to" type="text" name="gametime-to">
+				</div>
+				<div class="selection">
+					<label for="made">Made</label>
+					<select id="made" class="selectpicker" data-live-search="true" data-size="5" data-width="90px">
+						<option>All</option>
+						<option data-value="true">Made</option>
+						<option data-value="false">Missed</option>
+					</select>
+				</div>
+				<div class="selection">
+					<label for="shot_type">Type</label>
+					<select id="shot_type" class="selectpicker" data-live-search="true" data-size="5" data-width="120px">
+						<option>All</option>
+						<option data-value="dunk">Dunk</option>
+						<option data-value="layup">Layup</option>
+						<option data-value="tip shot">Tip Shot</option>
+						<option data-value="jump shot">Jump Shot</option>
+						<option data-value="hook shot">Hook Shot</option>
+					</select>
+				</div>
+				<div class="selection">
+					<label for="shot_value">Value</label>
+					<select id="shot_value" class="selectpicker" data-live-search="true" data-size="5" data-width="60px">
+						<option>All</option>
+						<option data-value="false">2</option>
+						<option data-value="true">3</option>
+					</select>
+				</div>
+			</div>
+			<div id="heatmap">
+				<canvas id="export"></canvas>
+				<canvas id="court"></canvas>
+				<canvas id="shots"></canvas>
+				<svg id="legend"></svg>
+				<div style="position: absolute; top: 610px; left: -150px; width: 300px;">
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<a id="btn-save" class="btn btn-light" style="border-right: 1px solid lightgrey;">Save</a>
+						</div>
+						<input type="text" id="save-text" class="form-control" placeholder="heatmap" aria-label="heatmap" aria-describedby="basic-addon1">
+						<div class="input-group-append">
+							<span class="input-group-text" id="basic-addon2">.png</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Jquery -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<!-- Popper (for bootstrap) -->
+		<script src="https://unpkg.com/popper.js@1.14.1/dist/umd/popper.min.js"></script>
+		<!-- Bootstrap -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+		<!-- D3 -->
+		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<!-- D3 Chromatic -->
+		<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+		<!-- Bootstrap-select -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0-beta/js/bootstrap-select.min.js"></script>
+		<!-- Fontawesome -->
+		<script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
+		<script src={{ url_for('static', filename='./js/main.js') }}></script>
+		<script src={{ url_for('static', filename='./js/duration-picker.min.js') }}></script>
+	</body>
+</html>
